@@ -32,16 +32,22 @@ async function run() {
 
         // get all users
         app.get("/users", async (req, res) => {
-            const cursor = await users.find().toArray();
+            const allUsers = await users.find().toArray();
             // const result = await cursor.toArray();
-            res.send(cursor);
+            res.send(allUsers);
+        })
+        app.post("/users", async(req,res)=>{
+            const newUser = req.body;
+            console.log(newUser);
+            const result = await users.insertOne(newUser);
+            res.send(result);
         })
 
         // get all classes
         app.get("/classes", async (req, res) => {
-            const cursor = await classes.find().toArray();
+            const allClasses = await classes.find().toArray();
             // const result = await cursor.toArray();
-            res.send(cursor);
+            res.send(allClasses);
         })
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
