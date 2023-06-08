@@ -1,0 +1,82 @@
+[
+  {
+    "image": "instructor1.jpg",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor2.jpg",
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor3.jpg",
+    "name": "Alex Johnson",
+    "email": "alex.johnson@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor4.jpg",
+    "name": "Sarah Davis",
+    "email": "sarah.davis@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor5.jpg",
+    "name": "Michael Wilson",
+    "email": "michael.wilson@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor6.jpg",
+    "name": "Emily Thompson",
+    "email": "emily.thompson@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor7.jpg",
+    "name": "Daniel Anderson",
+    "email": "daniel.anderson@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor8.jpg",
+    "name": "Olivia White",
+    "email": "olivia.white@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor9.jpg",
+    "name": "Matthew Brown",
+    "email": "matthew.brown@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "instructor10.jpg",
+    "name": "Ava Lee",
+    "email": "ava.lee@example.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  }
+]

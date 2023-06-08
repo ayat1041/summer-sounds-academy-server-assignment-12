@@ -1,0 +1,112 @@
+[
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/a4172f57-ec32-4caf-9a16-01df3281de63",
+    "name": "John Doe",
+    "email": "john.doe@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/0c1ae6b2-790d-4693-8bcc-46cd349924dc",
+    "name": "Jane Smith",
+    "email": "jane.smith@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/273ccbcb-2e80-4eae-adcc-b7ebff8a6221",
+    "name": "Alex Johnson",
+    "email": "alex.johnson@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/e808c5c4-8884-42e9-a2b5-2f8fd394b2bb",
+    "name": "Sarah Davis",
+    "email": "sarah.davis@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/764ac556-cb05-43fa-ac03-fd85d3088ce1",
+    "name": "Michael Wilson",
+    "email": "michael.wilson@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/2d0ea20f-c7c5-46a9-9627-d0e551396c05",
+    "name": "Emily Thompson",
+    "email": "emily.thompson@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/cb639b4b-e9aa-42b0-835d-0103bf2b5d4b",
+    "name": "Daniel Anderson",
+    "email": "daniel.anderson@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/0c5c667e-a463-4db7-bc55-9c19764c6864",
+    "name": "Olivia White",
+    "email": "olivia.white@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/ed23cc58-c73c-4d4d-9414-9e97d6a2742a",
+    "name": "Matthew Brown",
+    "email": "matthew.brown@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/7658e068-c046-44b2-b6da-fbd9c2a1821b",
+    "name": "Ava Lee",
+    "email": "ava.lee@gmail.com",
+    "no_of_classes": 0,
+    "name_of_classes": [],
+    "role": "instructor"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/119656d7-3ff6-43c8-91a4-d4ec65b6b320",
+    "name": "Rahul Patel",
+    "email": "rahul.patel@gmail.com",
+    "role": "student"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/0976c492-0127-4dc1-ad5e-cdd707d49fc2",
+    "name": "Fatima Khan",
+    "email": "fatima.khan@gmail.com",
+    "role": "student"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/1030c6ce-3897-4d23-b249-218a26cc700b",
+    "name": "Amit Sharma",
+    "email": "amit.sharma@gmail.com",
+    "role": "admin"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/d824c7f6-5f39-4dbd-91f1-c6aa5265ae68",
+    "name": "Ananya Gupta",
+    "email": "ananya.gupta@gmail.com",
+    "role": "student"
+  },
+  {
+    "image": "https://github.com/ayat1041/just_for_issues/assets/57280365/d6b4a667-a524-48db-a634-006d0f7f7b86",
+    "name": "Ravi Verma",
+    "email": "ravi.verma@gmail.com",
+    "role": "student"
+  }
+]
