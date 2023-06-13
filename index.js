@@ -1,12 +1,29 @@
 const express = require("express")
 const cors = require("cors")
 const app = express();
+require('dotenv').config()
 const port = process.env.PORT || 5000;
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
-require('dotenv').config()
+const jwt = require('jsonwebtoken');
+
 app.use(cors());
 app.use(express.json());
 
+const verifyJWT = (req,res,next)=>{
+    const authorization = req.headers.authorization;
+    if(!authorization){
+        return res.status(401).send({error: true, message: 'unauthorized access'});
+    }
+    const token = authorization.split(' ')[1];
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,decoded)=>{
+        if(err){
+            return res.status(401).send({error: true, message: 'unauthorized access'});
+        }
+        req.decoded=decoded;
+        next();
+    })
+}
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -48,7 +65,7 @@ async function run() {
             res.send(allUsers);
         })
 
-        app.get("/enrollment", async (req, res) => {
+        app.get("/enrollment",async (req, res) => {
             let query = {};
             const allEnrollment = await enrollment.find(query).toArray();
             res.send(allEnrollment);
@@ -61,17 +78,27 @@ async function run() {
             const result = await enrollment.insertOne(newEnrollment);
             res.send(result);
         });
+
+        app.post('/jwt',(req,res)=>{
+            const user = req.body;
+            const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'12h'})
+            res.send({token})
+        })
+
+
         // payment intent
-        app.post('/create-payment-intent', async (req, res) => {
+        app.post('/create-payment-intent', verifyJWT,async (req, res) => {
+        // app.post('/create-payment-intent', async (req, res) => {
             const { price } = req.body;
-            const amount = price * 100;
-            const paymentIntent = await stripe.paymentIntens.create({
+            const amount = parseFloat(price) * 100;
+            console.log(price,amount);
+            const paymentIntent = await stripe.paymentIntents.create({
                 amount: amount,
                 currency: 'usd',
                 payment_method_types: ['card']
             });
             res.send({
-                clientSecret: paymentIntent.client_secret
+                clientSecret: paymentIntent.client_secret,
             });
         })
 
@@ -170,7 +197,7 @@ async function run() {
         app.post("/classes", async (req, res) => {
             const newClass = req.body;
             console.log(newClass);
-            const result = await users.insertOne(newClass);
+            const result = await classes.insertOne(newClass);
             res.send(result);
         })
 
