@@ -9,18 +9,19 @@ const jwt = require('jsonwebtoken');
 app.use(cors());
 app.use(express.json());
 
-const verifyJWT = (req,res,next)=>{
+const verifyJWT = (req, res, next) => {
     const authorization = req.headers.authorization;
-    if(!authorization){
-        return res.status(401).send({error: true, message: 'unauthorized access'});
+    console.log(authorization);
+    if (!authorization) {
+        return res.status(401).send({ error: true, message: 'no header' });
     }
     const token = authorization.split(' ')[1];
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,decoded)=>{
-        if(err){
-            return res.status(401).send({error: true, message: 'unauthorized access'});
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({ error: true, message: 'unauthorized access this one?' });
         }
-        req.decoded=decoded;
+        req.decoded = decoded;
         next();
     })
 }
@@ -48,6 +49,7 @@ async function run() {
         const users = database.collection("users");
         const classes = database.collection("classes");
         const enrollment = database.collection("enrollment");
+        const paymentCollection = database.collection("payments");
 
         // get all users
         app.get("/users", async (req, res) => {
@@ -61,11 +63,18 @@ async function run() {
             if (queryEmail) {
                 query.email = queryEmail;
             }
-            const allUsers = await users.find(query).limit(lim).toArray();
+            let allUsers = await users.find(query);
+
+            if (queryRole === "instructor") {
+                allUsers = await allUsers.sort({ total_students: -1 });
+            }
+
+            allUsers = await allUsers.limit(lim).toArray();
+
             res.send(allUsers);
         })
 
-        app.get("/enrollment",async (req, res) => {
+        app.get("/enrollment", async (req, res) => {
             let query = {};
             const allEnrollment = await enrollment.find(query).toArray();
             res.send(allEnrollment);
@@ -78,20 +87,44 @@ async function run() {
             const result = await enrollment.insertOne(newEnrollment);
             res.send(result);
         });
+        app.delete("/enrollment/:id", async (req, res) => {
+            const enrollmentId = req.params.id;
 
-        app.post('/jwt',(req,res)=>{
+            const result = await enrollment.deleteOne({ _id: new ObjectId(enrollmentId) });
+            res.send(result);
+        });
+
+        // update status after payment
+        app.patch("/enrollment/payment/:id", async (req, res) => {
+            const enrollmentId = req.params.id;
+
+            const enrollmentObj = await enrollment.findOne({ _id: new ObjectId(enrollmentId) });
+
+            enrollmentObj.status = "paid";
+
+            const result = await enrollment.updateOne(
+                { _id: new ObjectId(enrollmentId) },
+                { $set: enrollmentObj }
+            );
+            res.send(result);
+        });
+
+
+
+
+        app.post('/jwt', (req, res) => {
             const user = req.body;
-            const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'12h'})
-            res.send({token})
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' })
+            res.send({ token })
         })
 
 
         // payment intent
-        app.post('/create-payment-intent', verifyJWT,async (req, res) => {
-        // app.post('/create-payment-intent', async (req, res) => {
+        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+            // app.post('/create-payment-intent', async (req, res) => {
             const { price } = req.body;
             const amount = parseFloat(price) * 100;
-            console.log(price,amount);
+            console.log(price, amount);
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: amount,
                 currency: 'usd',
@@ -101,6 +134,18 @@ async function run() {
                 clientSecret: paymentIntent.client_secret,
             });
         })
+
+        // payment api
+        app.post('/payments', async (req, res) => {
+            const payment = req.body;
+            const result = await paymentCollection.insertOne(payment)
+            res.send(result);
+        })
+        app.get('/payments', async (req, res) => {
+            const email = req.query.email || "";
+            const payments = await paymentCollection.find({ email: email }).sort({ date: -1 }).toArray();
+            res.send(payments);
+        });
 
         // increase instructors total students number
         app.post("/increaseTotalStudents", async (req, res) => {
@@ -194,12 +239,154 @@ async function run() {
             res.send(allClasses);
         })
 
+        // find single class
+        app.get("/classes/:id", async (req, res) => {
+            const classId = req.params.id;
+            const query = { _id: new ObjectId(classId) };
+
+            const foundClass = await classes.findOne(query);
+            res.send(foundClass);
+        });
+
         app.post("/classes", async (req, res) => {
-            const newClass = req.body;
-            console.log(newClass);
+            const {
+                class_image,
+                class_name,
+                details,
+                instructor_name,
+                instructor_email,
+                available_seats,
+                price,
+                status = "pending",
+                feedback = "",
+            } = req.body;
+
+            const newClass = {
+                class_image,
+                class_name,
+                details,
+                instructor_name,
+                instructor_email,
+                available_seats: parseInt(available_seats),
+                price: parseFloat(price),
+                status,
+                feedback,
+                enrolled_students: 0
+            };
+
             const result = await classes.insertOne(newClass);
             res.send(result);
-        })
+        });
+
+
+        app.patch("/classes/updateClass/:id", async (req, res) => {
+            const classId = req.params.id;
+            const {
+                class_image,
+                class_name,
+                details,
+                instructor_name,
+                instructor_email,
+                available_seats,
+                price,
+                status = "pending",
+                feedback = ""
+            } = req.body;
+
+            const updatedClass = {
+                class_image,
+                class_name,
+                details,
+                instructor_name,
+                instructor_email,
+                available_seats: parseInt(available_seats),
+                price: parseFloat(price),
+                status,
+                feedback,
+            };
+
+
+            const filter = { _id: new ObjectId(classId) };
+            const update = { $set: updatedClass };
+
+            const result = await classes.updateOne(filter, update);
+
+            res.send(result);
+        });
+
+        // approval denied
+        app.patch("/classes/approval/denied/:id", async (req, res) => {
+            const classId = req.params.id;
+            const {
+                status = "denied",
+                feedback
+            } = req.body;
+
+            const updatedClass = {
+                status,
+                feedback
+            };
+            const filter = { _id: new ObjectId(classId) };
+            const update = { $set: updatedClass };
+            const result = await classes.updateOne(filter, update);
+            res.send(result);
+        });
+
+        //approved
+        app.patch("/classes/approval/approved/:id", async (req, res) => {
+            const classId = req.params.id;
+            const {
+                status = "approved",
+                feedback
+            } = req.body;
+
+            const updatedClass = {
+                status,
+                feedback
+            };
+            const filter = { _id: new ObjectId(classId) };
+            const update = { $set: updatedClass };
+            const result = await classes.updateOne(filter, update);
+            const classData = await classes.findOne(filter);
+
+            const query = { email: classData.instructor_email };
+
+            const updatedInstructor = {
+                $inc: {
+                    no_of_classes: 1
+                }
+            }
+
+            updatedResult = await users.updateOne(query, updatedInstructor);
+
+            res.send(result);
+        });
+
+
+
+
+
+
+        // app.post("/classes", async (req, res) => {
+        //     const newClass = req.body;
+        //     console.log(newClass);
+        //     const result = await classes.insertOne(newClass);
+        //     res.send(result);
+        // })
+        // update available seats and enrolled students
+        app.patch("/classes/seats/enrolled/:id", async (req, res) => {
+            const classId = req.params.id;
+
+            const classObj = await classes.findOne({ _id: new ObjectId(classId) });
+            classObj.available_seats -= 1;
+            classObj.enrolled_students += 1;
+
+            const result = await classes.updateOne(
+                { _id: new ObjectId(classId) },
+                { $set: classObj }
+            );
+            res.send(result);
+        });
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
