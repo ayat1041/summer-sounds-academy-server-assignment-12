@@ -5,6 +5,7 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 const jwt = require('jsonwebtoken');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 app.use(cors());
 app.use(express.json());
@@ -27,16 +28,27 @@ const verifyJWT = (req, res, next) => {
 }
 
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+
 const uri = `mongodb+srv://${process.env.VITE_user}:${process.env.VITE_pass}@cluster0.ichdzcf.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//     serverApi: {
+//         version: ServerApiVersion.v1,
+//         strict: true,
+//         deprecationErrors: true,
+//     }
+// });
+
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-    }
+    },
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 10
 });
 
 async function run() {
